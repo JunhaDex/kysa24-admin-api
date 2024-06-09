@@ -10,6 +10,8 @@ import { PostModule } from '@/resources/post/post.module';
 import { GroupModule } from '@/resources/group/group.module';
 import { REDIS_CONFIG } from '@/providers/redis.provider';
 import { MYSQL_CONFIG } from '@/providers/mysql.provider';
+import { AuthModule } from './auth/auth.module';
+import { TeamModule } from './team/team.module';
 
 @Module({
   imports: [
@@ -32,6 +34,8 @@ import { MYSQL_CONFIG } from '@/providers/mysql.provider';
     UserModule,
     PostModule,
     GroupModule,
+    AuthModule,
+    TeamModule,
   ],
   controllers: [AppController],
   providers: [AppService],

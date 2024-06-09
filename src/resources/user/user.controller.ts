@@ -4,7 +4,10 @@ import {
   ForbiddenException,
   Get,
   HttpStatus,
+  Param,
   Post,
+  Put,
+  Query,
   Res,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -15,15 +18,23 @@ import { formatResponse, validateObject } from '@/utils/index.util';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post('login')
-  async login(@Body() cred: LoginInput, @Res() res: any) {
-    if (validateObject(['id', 'pwd'], cred)) {
-      const token = await this.userService.login(cred);
-      return res.code(HttpStatus.OK).send(formatResponse(HttpStatus.OK, token));
-    }
-    throw new ForbiddenException();
+  @Get()
+  async listUsers(@Query() query: any) {
+    return 'list';
   }
 
-  @Get('my')
-  async getMyInfo() {}
+  @Post('new')
+  async createUser(@Body() user: any) {
+    return 'create';
+  }
+
+  @Put(':id/block')
+  async blockUser(@Param() id: string) {
+    return 'block';
+  }
+
+  @Put(':id/pwd')
+  async changePassword(@Param() id: string) {
+    return 'change';
+  }
 }
