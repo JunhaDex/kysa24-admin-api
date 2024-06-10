@@ -1,0 +1,19 @@
+### Create a new admin
+POST {{host}}/api/v1/auth/new
+Content-Type: application/json
+Authorization: Bearer {{auth}}
+
+{
+  "loginId": "admin",
+  "pwd": "admin",
+  "name": "admin"
+}
+
+### Login
+POST {{host}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "userId": "admin",
+  "password": "admin"
+}

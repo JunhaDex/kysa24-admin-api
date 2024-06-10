@@ -1,8 +1,29 @@
-import { ApiResponse } from '@/types/index.type';
+import { ApiResponse, DTOKeys } from '@/types/index.type';
 
 export function validateObject(keys: string[], obj: any): boolean {
   for (const key of keys as string[]) {
     if (!obj[key]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+export function validateBody(keys: DTOKeys, obj: any): boolean {
+  for (const key in keys) {
+    if (keys[key].required && !obj[key]) {
+      return false;
+    }
+    if (keys[key].length && obj[key].length > keys[key].length) {
+      return false;
+    }
+    if (keys[key].limit && obj[key] > keys[key].limit) {
+      return false;
+    }
+    if (keys[key].include && !keys[key].include.includes(obj[key])) {
+      return false;
+    }
+    if (keys[key].exclude && keys[key].exclude.includes(obj[key])) {
       return false;
     }
   }

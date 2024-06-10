@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CacheModule } from '@nestjs/cache-manager';
 import * as redisStore from 'cache-manager-ioredis';
@@ -8,10 +13,12 @@ import { AppService } from './app.service';
 import { UserModule } from '@/resources/user/user.module';
 import { PostModule } from '@/resources/post/post.module';
 import { GroupModule } from '@/resources/group/group.module';
+import { AuthModule } from '@/resources/auth/auth.module';
+import { TeamModule } from '@/resources/team/team.module';
 import { REDIS_CONFIG } from '@/providers/redis.provider';
 import { MYSQL_CONFIG } from '@/providers/mysql.provider';
-import { AuthModule } from './auth/auth.module';
-import { TeamModule } from './team/team.module';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { AuthMiddleware } from '@/middlewares/auth.middleware';
 
 @Module({
   imports: [
@@ -19,7 +26,8 @@ import { TeamModule } from './team/team.module';
       ...MYSQL_CONFIG,
       entities: ['dist/**/*.entity{.ts,.js}'],
       synchronize: false,
-      // logging: true,
+      namingStrategy: new SnakeNamingStrategy(),
+      logging: true,
     }),
     CacheModule.register({
       ...REDIS_CONFIG,
@@ -28,7 +36,7 @@ import { TeamModule } from './team/team.module';
     }),
     JwtModule.register({
       global: true,
-      secret: process.env.JWT_HASH,
+      secret: process.env.JWT_SECRET_HASH,
       signOptions: { expiresIn: '2h' },
     }),
     UserModule,
@@ -40,4 +48,11 @@ import { TeamModule } from './team/team.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(AuthMiddleware)
+      .exclude({ path: 'auth/login', method: RequestMethod.POST })
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+}
