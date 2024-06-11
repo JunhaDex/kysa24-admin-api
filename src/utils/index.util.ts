@@ -1,4 +1,5 @@
 import { ApiResponse, DTOKeys } from '@/types/index.type';
+import { HttpStatus, Logger } from '@nestjs/common';
 
 export function validateObject(keys: string[], obj: any): boolean {
   for (const key of keys as string[]) {
@@ -9,10 +10,33 @@ export function validateObject(keys: string[], obj: any): boolean {
   return true;
 }
 
+export function cleanFilter(obj: any, keys: string[]): any {
+  const cleaned: any = {};
+  for (const key of keys) {
+    if (key.includes('-')) {
+      // snake to camel
+      const camelKey = key.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+      cleaned[camelKey] = obj[key];
+    } else {
+      cleaned[key] = obj[key];
+    }
+  }
+  return cleaned;
+}
+
 export function validateBody(keys: DTOKeys, obj: any): boolean {
   for (const key in keys) {
     if (keys[key].required && !obj[key]) {
       return false;
+    }
+    if (typeof keys[key].type === 'string') {
+      if (keys[key].type !== typeof obj[key]) {
+        return false;
+      }
+    } else {
+      if (!keys[key].type.includes(obj[key])) {
+        return false;
+      }
     }
     if (keys[key].length && obj[key].length > keys[key].length) {
       return false;
@@ -28,6 +52,15 @@ export function validateBody(keys: DTOKeys, obj: any): boolean {
     }
   }
   return true;
+}
+
+export function fallbackCatch(e: any, res: any) {
+  Logger.error(e);
+  return res
+    .code(HttpStatus.INTERNAL_SERVER_ERROR)
+    .send(
+      formatResponse(HttpStatus.INTERNAL_SERVER_ERROR, 'internal server error'),
+    );
 }
 
 export function safeObject(
@@ -55,7 +88,7 @@ export function safeObject(
 
 export function formatResponse(code: number, result: any): ApiResponse {
   let message = '';
-  if (code === 200) {
+  if (code >= 200 && code < 300) {
     message = 'ok';
   } else if (code === 400) {
     message = 'bad request';
@@ -67,6 +100,8 @@ export function formatResponse(code: number, result: any): ApiResponse {
     message = 'not found';
   } else if (code === 500) {
     message = 'internal server error';
+  } else {
+    message = 'somewhat';
   }
   return {
     code,

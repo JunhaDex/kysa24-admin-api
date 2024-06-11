@@ -8,12 +8,12 @@ import { Admin } from '@/resources/auth/auth.entity';
 
 @Injectable()
 export class AuthService {
-  static ADMINSERVICE_EXCEPTIONS = {
+  static ADMIN_SERVICE_EXCEPTIONS = {
     ADMIN_EXISTS: 'ADMIN_EXISTS',
     ADMIN_NOT_FOUND: 'ADMIN_NOT_FOUND',
   } as const;
 
-  private readonly Exceptions = AuthService.ADMINSERVICE_EXCEPTIONS;
+  private readonly Exceptions = AuthService.ADMIN_SERVICE_EXCEPTIONS;
 
   constructor(
     private jwtService: JwtService,
@@ -37,7 +37,7 @@ export class AuthService {
     throw new Error(this.Exceptions.ADMIN_NOT_FOUND);
   }
 
-  async createAdmin(admin: AdminDTO) {
+  async createAdmin(admin: AdminDTO): Promise<void> {
     const duplicate = await this.adminRepo.findOneBy({
       loginId: admin.loginId,
     });

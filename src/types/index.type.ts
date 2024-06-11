@@ -16,9 +16,14 @@ export interface Paginate<T> {
   list: T[];
 }
 
+export interface PageQuery {
+  pageNo: number;
+  pageSize: number;
+}
+
 export interface DTOKeys {
   [key: string]: {
-    type: string;
+    type: string | Array<string>;
     required: boolean;
     length?: number;
     limit?: number;
