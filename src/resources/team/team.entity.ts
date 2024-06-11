@@ -1,4 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { User } from '@/resources/user/user.entity';
 
 @Entity({ name: 'team' })
 export class Team {
@@ -6,10 +13,13 @@ export class Team {
   id: number;
   @Column()
   teamName: string;
-  @Column()
+  @Column({ nullable: true })
   leader: number;
   @Column({ nullable: true })
   createdAt: Date;
   @Column({ nullable: true })
   updatedAt: Date;
+  @OneToOne(() => User)
+  @JoinColumn({ name: 'leader' })
+  leaderUser: User;
 }

@@ -18,6 +18,7 @@ import {
   cleanFilter,
   fallbackCatch,
   formatResponse,
+  safeObject,
   validateBody,
 } from '@/utils/index.util';
 import { UserDTO, UserDTOKeys } from '@/resources/user/user.type';
@@ -70,9 +71,12 @@ export class UserController {
    */
   @Post('new')
   async createUser(@Body() userDto: UserDTO, @Res() res: any) {
+    console.log(validateBody(UserDTOKeys, userDto));
     if (validateBody(UserDTOKeys, userDto)) {
+      const newUserInput = safeObject(UserDTOKeys, userDto) as UserDTO;
+      console.log(newUserInput);
       try {
-        await this.userService.createUser(userDto);
+        await this.userService.createUser(newUserInput);
         return res
           .code(HttpStatus.CREATED)
           .send(formatResponse(HttpStatus.CREATED, 'user created'));

@@ -6,8 +6,9 @@ import { PageQuery, Paginate } from '@/types/index.type';
 import { StatusUserAct, User } from '@/resources/user/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DEFAULT_PAGE_SIZE } from '@/constants/index.constant';
-import { UserDTO, UserStatus } from '@/resources/user/user.type';
+import { UserDAO, UserDTO, UserStatus } from '@/resources/user/user.type';
 import { Team } from '@/resources/team/team.entity';
+import { flattenObject } from '@/utils/index.util';
 
 @Injectable()
 export class UserService {
@@ -28,7 +29,7 @@ export class UserService {
   async listUsers(options?: {
     page: PageQuery;
     filter: { name: string; teamName: string };
-  }): Promise<Paginate<User>> {
+  }): Promise<Paginate<UserDAO>> {
     // setup queries
     const size = options?.page ? options.page.pageSize : DEFAULT_PAGE_SIZE;
     const skip = options?.page
@@ -47,16 +48,30 @@ export class UserService {
         teamId = team ? team.id : undefined;
       }
       filter = {
-        name: Like(`%${options.filter.name}%`),
+        name: options.filter.name
+          ? Like(`%${options.filter.name}%`)
+          : undefined,
         teamId,
       };
     }
     // query user table
-    const [list, count] = await this.userRepo.findAndCount({
-      select: { pwd: false },
+    const [listRaw, count] = await this.userRepo.findAndCount({
       where: filter,
+      relations: ['team'],
       skip,
       take,
+    });
+    const list = listRaw.map((user) => {
+      return flattenObject(user, {
+        exclude: [
+          'pwd',
+          'team.id',
+          'team.leader',
+          'team.createdAt',
+          'team.updatedAt',
+        ],
+        alias: { 'team.teamName': 'teamName' },
+      }) as UserDAO;
     });
     // return paginated result
     return {
@@ -71,9 +86,10 @@ export class UserService {
   }
 
   async createUser(user: UserDTO): Promise<void> {
-    // find any duplicate user
+    // find any duplicate user & team name exact match
     const duplicate = await this.userRepo.findOneBy({ authId: user.id });
-    if (!duplicate) {
+    const team = await this.teamRepo.findOneBy({ teamName: user.teamName });
+    if (!duplicate && team) {
       // setup new user with unique ref
       const ref = uuidv4();
       const newUser = this.userRepo.create({
@@ -85,7 +101,7 @@ export class UserService {
         nickname: user.nickname,
         authId: user.id,
         pwd: user.pwd,
-        teamId: user.teamId,
+        teamId: team.id,
         profileImg: user.profileImg ?? '',
         coverImg: user.coverImg ?? '',
         introduce: user.introduce ?? '',

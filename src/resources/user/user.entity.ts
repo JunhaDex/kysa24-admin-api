@@ -1,4 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Team } from '@/resources/team/team.entity';
 
 @Entity({ name: 'user' })
 export class User {
@@ -36,6 +43,9 @@ export class User {
   createdAt: Date;
   @Column({ nullable: true })
   updatedAt: Date;
+  @OneToOne(() => Team)
+  @JoinColumn({ name: 'team_id' })
+  team: Team;
 }
 
 @Entity({ name: 'status_user_act' })
@@ -48,8 +58,4 @@ export class StatusUserAct {
   statusName: string;
   @Column()
   statusDesc: string;
-  @Column()
-  createdAt: Date;
-  @Column()
-  updatedAt: Date;
 }

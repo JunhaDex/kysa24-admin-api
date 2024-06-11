@@ -17,3 +17,48 @@ Content-Type: application/json
   "userId": "admin",
   "password": "admin"
 }
+
+### Get all users
+GET {{host}}/api/v1/user
+Content-Type: application/json
+Authorization: Bearer {{auth}}
+
+### Create a new user
+POST {{host}}/api/v1/user/new
+Content-Type: application/json
+Authorization: Bearer {{auth}}
+
+{
+  "name": "user-2",
+  "sex": "m",
+  "nickname": "user-2",
+  "id": "user-2",
+  "pwd": "user-2",
+  "teamName": "1조",
+  "dob": "1991-01-01",
+  "geo": "user-2"
+}
+
+### Update user status
+PUT {{host}}/api/v1/user/774fcd96-0871-4b17-a104-62f884227d24/block
+Content-Type: application/json
+Authorization: Bearer {{auth}}
+
+{
+  "level": 0
+}
+
+### Get team info
+GET {{host}}/api/v1/user/team/1
+Content-Type: application/json
+Authorization: Bearer {{auth}}
+
+### Update team leader
+PUT {{host}}/api/v1/user/team/1/leader
+Content-Type: application/json
+Authorization: Bearer {{auth}}
+
+{
+  "userRef": "774fcd96-0871-4b17-a104-62f884227d24"
+}
+

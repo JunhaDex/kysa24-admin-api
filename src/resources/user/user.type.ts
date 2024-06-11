@@ -9,10 +9,6 @@ export const UserDTOKeys: DTOKeys = {
     type: ['m', 'f'],
     required: true,
   },
-  age: {
-    type: 'number',
-    required: true,
-  },
   nickname: {
     type: 'string',
     required: true,
@@ -25,8 +21,8 @@ export const UserDTOKeys: DTOKeys = {
     type: 'string',
     required: true,
   },
-  teamId: {
-    type: 'number',
+  teamName: {
+    type: 'string',
     required: true,
   },
   profileImg: {
@@ -57,12 +53,35 @@ export interface UserDTO {
   nickname: string;
   id: string;
   pwd: string;
-  teamId: number;
+  teamName: string;
   profileImg?: string;
   coverImg?: string;
   introduce?: string;
   dob: Date;
   geo: string;
+}
+
+export interface UserDAO extends UserDAOBase {
+  teamName: string;
+}
+
+export interface UserDAOBase {
+  id: number;
+  ref: string;
+  name: string;
+  sex: number;
+  age: number;
+  dob: Date;
+  nickname: string;
+  authId: string;
+  teamId: number;
+  profileImg: string;
+  coverImg: string;
+  introduce: string;
+  geo: string;
+  actStatus: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export const UserStatusKey = {

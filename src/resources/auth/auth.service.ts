@@ -30,7 +30,9 @@ export class AuthService {
           name: admin.name,
           sub: admin.id,
         };
-        const accessToken = await this.jwtService.signAsync(payload);
+        const accessToken = await this.jwtService.signAsync(payload, {
+          expiresIn: '7d',
+        });
         return { accessToken };
       }
     }
