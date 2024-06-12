@@ -23,7 +23,6 @@ export class AuthService {
   async loginAdmin(login: LoginDTO): Promise<LoginResponse> {
     const admin = await this.adminRepo.findOneBy({ loginId: login.userId });
     if (admin) {
-      console.log(admin);
       if (await bcrypt.compare(login.password, admin.pwd)) {
         const payload = {
           loginId: admin.loginId,

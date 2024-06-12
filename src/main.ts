@@ -6,6 +6,7 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import * as process from 'node:process';
+import { Logger } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -14,8 +15,9 @@ async function bootstrap() {
   );
   app.setGlobalPrefix('api/v1');
   await app.listen(3000);
+  Logger.log(`Server running on port 3000`);
+  Logger.log(`Timezone: ${process.env.TZ}`);
+  Logger.log(`Server Started: ${new Date().toString()}`);
 }
 
-console.log('Timezone:', process.env.TZ);
-console.log('Server Started: ', new Date().toString());
 bootstrap();

@@ -63,7 +63,7 @@ Authorization: Bearer {{auth}}
 }
 
 ### Create a new group
-POST {{host}}/api/v1/group/new?must=true&role=reader
+POST {{host}}/api/v1/group/new?must=true
 Content-Type: application/json
 Authorization: Bearer {{auth}}
 
@@ -78,8 +78,21 @@ Content-Type: application/json
 Authorization: Bearer {{auth}}
 
 ### delete a group
-DELETE {{host}}/api/v1/group/070f8be6-5d7f-4ca4-9ca5-7021e2e3ab15
+DELETE {{host}}/api/v1/group/1a017a21-b483-44fa-8ad4-4dca1d47528a
 Content-Type: application/json
 Authorization: Bearer {{auth}}
 
 {}
+
+### list all posts
+GET {{host}}/api/v1/post?group-ref=1a017a21-b483-44fa-8ad4-4dca1d47528a
+Content-Type: application/json
+Authorization: Bearer {{auth}}
+
+### delete a post
+DELETE {{host}}/api/v1/post/1
+Content-Type: application/json
+Authorization: Bearer {{auth}}
+
+{}
+

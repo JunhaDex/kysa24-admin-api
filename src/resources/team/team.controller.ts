@@ -36,6 +36,11 @@ export class TeamController {
    */
   @Get(':tid')
   async getTeam(@Param('tid') tid: string, @Res() res: any) {
+    if (isNaN(parseInt(tid))) {
+      return res
+        .code(HttpStatus.BAD_REQUEST)
+        .send(formatResponse(HttpStatus.BAD_REQUEST, 'invalid request'));
+    }
     try {
       const data = await this.teamService.listTeamUsers(parseInt(tid));
       return res.code(HttpStatus.OK).send(formatResponse(HttpStatus.OK, data));

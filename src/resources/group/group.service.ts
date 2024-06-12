@@ -8,7 +8,7 @@ import { DEFAULT_PAGE_SIZE } from '@/constants/index.constant';
 import { GroupDAO, GroupDTO } from '@/resources/group/group.type';
 import { User } from '@/resources/user/user.entity';
 import { flattenObject } from '@/utils/index.util';
-import { Post } from '@/resources/post/post.entity';
+import { PostService } from '@/resources/post/post.service';
 
 @Injectable()
 export class GroupService {
@@ -20,10 +20,10 @@ export class GroupService {
 
   constructor(
     @InjectRepository(Group) private readonly groupRepo: Repository<Group>,
-    @InjectRepository(Post) private readonly postRepo: Repository<Post>,
     @InjectRepository(GroupUserFollow)
     private readonly groupFollowRepo: Repository<GroupUserFollow>,
     @InjectRepository(User) private readonly userRepo: Repository<User>,
+    private readonly postService: PostService,
   ) {}
 
   async listGroups(options?: {
@@ -150,7 +150,7 @@ export class GroupService {
     const group = await this.groupRepo.findOneBy({ ref: groupRef });
     if (group) {
       // delete group
-      // TODO: use post service to remove all comment and likes.
+      await this.postService.deletePostByGroup(group.id);
       await this.groupFollowRepo.delete({ groupId: group.id });
       await this.groupRepo.delete({
         id: group.id,

@@ -23,7 +23,6 @@ export class AuthGuard implements CanActivate {
       if (user) {
         const id = user.sub;
         const admin = await this.authService.getAdminById(id);
-        console.log({ id, admin });
         if (admin) {
           req['user'] = admin;
           return true;

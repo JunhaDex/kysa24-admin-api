@@ -17,7 +17,6 @@ export function cleanFilter(obj: any, keys: string[]): any {
 
 export function validateBody(keys: DTOKeys, obj: any): boolean {
   for (const key in keys) {
-    console.log('checking key', key, keys[key], obj[key], typeof obj[key]);
     if (keys[key].required) {
       if (obj[key] === undefined || obj[key] === null || obj[key] === '') {
         return false;
@@ -25,12 +24,10 @@ export function validateBody(keys: DTOKeys, obj: any): boolean {
     } else if (!keys[key].required && obj[key] !== undefined) {
       if (typeof keys[key].type === 'string') {
         if (keys[key].type === 'date') {
-          console.log('checking date');
           if (isNaN(Date.parse(obj[key]))) {
             return false;
           }
         } else if (keys[key].type !== typeof obj[key]) {
-          console.log('checking type', keys[key].type, typeof obj[key]);
           return false;
         }
       } else {
@@ -138,7 +135,6 @@ export function flattenObject(
   recurse(obj, '');
   if (options?.include !== undefined) {
     for (const key in result) {
-      console.log(key, options.include.includes(key));
       if (!options.include.includes(key)) {
         delete result[key];
       }
