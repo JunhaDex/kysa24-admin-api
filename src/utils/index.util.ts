@@ -138,6 +138,7 @@ export function flattenObject(
   recurse(obj, '');
   if (options?.include !== undefined) {
     for (const key in result) {
+      console.log(key, options.include.includes(key));
       if (!options.include.includes(key)) {
         delete result[key];
       }

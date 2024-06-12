@@ -62,3 +62,24 @@ Authorization: Bearer {{auth}}
   "userRef": "774fcd96-0871-4b17-a104-62f884227d24"
 }
 
+### Create a new group
+POST {{host}}/api/v1/group/new?must=true&role=reader
+Content-Type: application/json
+Authorization: Bearer {{auth}}
+
+{
+  "creatorRef": "774fcd96-0871-4b17-a104-62f884227d24",
+  "groupName": "group-3"
+}
+
+### list all groups
+GET {{host}}/api/v1/group
+Content-Type: application/json
+Authorization: Bearer {{auth}}
+
+### delete a group
+DELETE {{host}}/api/v1/group/070f8be6-5d7f-4ca4-9ca5-7021e2e3ab15
+Content-Type: application/json
+Authorization: Bearer {{auth}}
+
+{}

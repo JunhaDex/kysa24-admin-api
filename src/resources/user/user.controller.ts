@@ -71,10 +71,8 @@ export class UserController {
    */
   @Post('new')
   async createUser(@Body() userDto: UserDTO, @Res() res: any) {
-    console.log(validateBody(UserDTOKeys, userDto));
     if (validateBody(UserDTOKeys, userDto)) {
       const newUserInput = safeObject(UserDTOKeys, userDto) as UserDTO;
-      console.log(newUserInput);
       try {
         await this.userService.createUser(newUserInput);
         return res
