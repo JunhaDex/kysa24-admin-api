@@ -11,7 +11,14 @@ import { Logger } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
-    new FastifyAdapter(),
+    new FastifyAdapter({ logger: true }),
+    {
+      bodyParser: true,
+      cors: {
+        origin: '*',
+        credentials: true,
+      },
+    },
   );
   app.setGlobalPrefix('api/v1');
   await app.listen(3000);

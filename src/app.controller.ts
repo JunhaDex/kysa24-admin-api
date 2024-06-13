@@ -15,6 +15,11 @@ export class AppController {
     return this.appService.getHello();
   }
 
+  @Get('healthz')
+  healthy(@Res() res: any) {
+    res.code(HttpStatus.OK).send(formatResponse(HttpStatus.OK, 'healthy'));
+  }
+
   @Get('test')
   async test(@Res() res: any): Promise<string> {
     const cached = await this.cacheManager.get('foo');

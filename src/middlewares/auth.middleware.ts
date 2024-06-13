@@ -14,6 +14,8 @@ export class AuthMiddleware implements NestMiddleware {
   constructor() {}
 
   async use(req: Request, res: http.ServerResponse, next: () => void) {
+    if (req.method === 'options') return next();
+    console.log('middleware!');
     const [type, token] = req.headers['authorization']?.split(' ') ?? [];
     if (type === 'Bearer' && token) {
       return next();
