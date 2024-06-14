@@ -5,7 +5,7 @@ import { Injectable } from '@nestjs/common';
 import { PageQuery, Paginate } from '@/types/index.type';
 import { StatusUserAct, User } from '@/resources/user/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DEFAULT_PAGE_SIZE } from '@/constants/index.constant';
+import { DEFAULT_PAGE_SIZE, EMPTY_PAGE } from '@/constants/index.constant';
 import { UserDAO, UserDTO, UserStatus } from '@/resources/user/user.type';
 import { Team } from '@/resources/team/team.entity';
 import { flattenObject } from '@/utils/index.util';
@@ -45,7 +45,11 @@ export class UserService {
         const team = await this.teamRepo.findOneBy({
           teamName: Like(`%${options.filter.teamName}%`),
         });
-        teamId = team ? team.id : undefined;
+        if (team) {
+          teamId = team.id;
+        } else {
+          return EMPTY_PAGE as Paginate<UserDAO>;
+        }
       }
       filter = {
         name: options.filter.name
