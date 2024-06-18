@@ -53,6 +53,7 @@ export class PostService {
       relations: ['authorUser', 'group'],
       skip,
       take,
+      order: { createdAt: 'DESC' },
     });
     const posts = listRaw.map((post) => {
       return flattenObject(post, {
