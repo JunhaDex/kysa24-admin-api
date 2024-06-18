@@ -27,6 +27,12 @@ import {
 export class TeamController {
   constructor(private readonly teamService: TeamService) {}
 
+  @Get()
+  async listTeams(@Res() res: any) {
+    const data = await this.teamService.listTeam();
+    return res.code(HttpStatus.OK).send(formatResponse(HttpStatus.OK, data));
+  }
+
   /**
    * List all team users
    * @param tid

@@ -19,6 +19,13 @@ export class TeamService {
     @InjectRepository(User) private readonly userRepo: Repository<User>,
   ) {}
 
+  async listTeam(): Promise<{ list: Team[]; meta: { totalCount: number } }> {
+    const [teams, count] = await this.teamRepo.findAndCount({
+      select: ['id', 'teamName'],
+    });
+    return { list: teams, meta: { totalCount: count } };
+  }
+
   async listTeamUsers(teamId: number): Promise<{
     team: Team;
     users: UserDAOBase[];
