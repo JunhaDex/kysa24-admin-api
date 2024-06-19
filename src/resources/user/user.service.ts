@@ -15,7 +15,6 @@ export class UserService {
   static USER_SERVICE_EXCEPTIONS = {
     USER_EXISTS: 'USER_EXISTS',
     USER_NOT_FOUND: 'USER_NOT_FOUND',
-    USER_PWD_NOT_MATCH: 'USER_PASS_NOT_MATCH',
   } as const;
   private readonly Exceptions = UserService.USER_SERVICE_EXCEPTIONS;
 
@@ -133,25 +132,17 @@ export class UserService {
     return age;
   }
 
-  async updateUserPassword(
-    userRef: string,
-    oldPwd: string,
-    newPwd: string,
-  ): Promise<void> {
+  async updateUserPassword(userRef: string, newPwd: string): Promise<void> {
     // find user by id
     const user = await this.userRepo.findOneBy({ ref: userRef });
     if (user) {
-      // compare old password
-      if (await bcrypt.compare(oldPwd, user.pwd)) {
-        // hash new password
-        const round = Number(process.env.BCRYPT_SALT_ROUND);
-        const salt = await bcrypt.genSalt(round);
-        user.pwd = await bcrypt.hash(newPwd, salt);
-        // save new password
-        await this.userRepo.save(user);
-        return;
-      }
-      throw new Error(this.Exceptions.USER_PWD_NOT_MATCH);
+      // hash new password
+      const round = Number(process.env.BCRYPT_SALT_ROUND);
+      const salt = await bcrypt.genSalt(round);
+      user.pwd = await bcrypt.hash(newPwd, salt);
+      // save new password
+      await this.userRepo.save(user);
+      return;
     }
     throw new Error(this.Exceptions.USER_NOT_FOUND);
   }

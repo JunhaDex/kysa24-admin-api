@@ -27,7 +27,7 @@ import { AuthMiddleware } from '@/middlewares/auth.middleware';
       entities: ['dist/**/*.entity{.ts,.js}'],
       synchronize: false,
       namingStrategy: new SnakeNamingStrategy(),
-      logging: true,
+      // logging: true,
     }),
     CacheModule.register({
       ...REDIS_CONFIG,

@@ -138,27 +138,15 @@ export class UserController {
     @Res() res: any,
   ) {
     const DTO_KEYS: DTOKeys = {
-      oldPwd: { type: 'string', required: true },
       newPwd: { type: 'string', required: true },
     } as const;
     if (validateBody(DTO_KEYS, pwdUpdate)) {
       try {
-        await this.userService.updateUserPassword(
-          ref,
-          pwdUpdate.oldPwd,
-          pwdUpdate.newPwd,
-        );
+        await this.userService.updateUserPassword(ref, pwdUpdate.newPwd);
         return res
           .code(HttpStatus.OK)
           .send(formatResponse(HttpStatus.OK, 'user password updated'));
       } catch (e) {
-        if (
-          e.message === UserService.USER_SERVICE_EXCEPTIONS.USER_PWD_NOT_MATCH
-        ) {
-          return res
-            .code(HttpStatus.FORBIDDEN)
-            .send(formatResponse(HttpStatus.FORBIDDEN, 'password not match'));
-        }
         fallbackCatch(e, res);
       }
     }
