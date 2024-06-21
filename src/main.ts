@@ -22,7 +22,7 @@ async function bootstrap() {
     },
   );
   app.setGlobalPrefix('api/v1');
-  await app.listen(3000);
+  await app.listen(3000, '0.0.0.0');
   Logger.log(`Server running on port 3000`);
   Logger.log(`Timezone: ${process.env.TZ}`);
   Logger.log(`Server Started: ${new Date().toString()}`);
