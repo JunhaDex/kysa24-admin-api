@@ -55,7 +55,7 @@ export function validateBody(keys: DTOKeys, obj: any): boolean {
 export function fallbackCatch(e: any, res: any) {
   Logger.error(e);
   return res
-    .code(HttpStatus.INTERNAL_SERVER_ERROR)
+    .status(HttpStatus.INTERNAL_SERVER_ERROR)
     .send(
       formatResponse(HttpStatus.INTERNAL_SERVER_ERROR, 'internal server error'),
     );

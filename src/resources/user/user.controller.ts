@@ -126,7 +126,6 @@ export class UserController {
    * @param ref
    * user ref
    * @param pwdUpdate
-   * - oldPwd: old password
    * - newPwd: new password
    * @param res
    * fastify response

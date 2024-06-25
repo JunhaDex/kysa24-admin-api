@@ -5,7 +5,6 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
-import * as process from 'node:process';
 import { Logger } from '@nestjs/common';
 
 async function bootstrap() {
