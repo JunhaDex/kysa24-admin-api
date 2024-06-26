@@ -29,14 +29,23 @@ Content-Type: application/json
 Authorization: Bearer {{auth}}
 
 {
-  "name": "user-2",
+  "name": "박준수",
   "sex": "m",
-  "nickname": "user-2",
-  "id": "user-2",
-  "pwd": "user-2",
-  "teamName": "1조",
-  "dob": "1991-01-01",
-  "geo": "user-2"
+  "nickname": "준수닉",
+  "id": "park.jun",
+  "pwd": "789012",
+  "teamName": "3조",
+  "dob": "1995-04-17",
+  "geo": "부산 해운대"
+}
+
+### Reset user password
+PUT {{host}}/api/v1/user/66cd5189-159f-4a46-aa04-117ec36473b3/pwd
+Content-Type: application/json
+Authorization: Bearer {{auth}}
+
+{
+  "newPwd": "000000"
 }
 
 ### Update user status
