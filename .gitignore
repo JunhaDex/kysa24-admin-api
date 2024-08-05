@@ -29,6 +29,9 @@ logs
 *.env*
 !.env.example
 
+# credentials
+secret
+
 # temp directory
 .temp
 .tmp
