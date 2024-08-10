@@ -29,18 +29,18 @@ Content-Type: application/json
 Authorization: Bearer {{auth}}
 
 {
-  "name": "박준수",
-  "sex": "m",
-  "nickname": "준수닉",
-  "id": "park.jun",
-  "pwd": "789012",
-  "teamName": "3조",
-  "dob": "1995-04-17",
-  "geo": "부산 해운대"
+  "name": "김민지",
+  "sex": "f",
+  "nickname": "뉴진스민지",
+  "id": "new.minji",
+  "pwd": "000000",
+  "teamName": "13조",
+  "dob": "2004-05-07",
+  "geo": "강원 춘천"
 }
 
 ### Reset user password
-PUT {{host}}/api/v1/user/66cd5189-159f-4a46-aa04-117ec36473b3/pwd
+PUT {{host}}/api/v1/user/7549143a-82bb-4dea-804a-096337cacf6f/pwd
 Content-Type: application/json
 Authorization: Bearer {{auth}}
 

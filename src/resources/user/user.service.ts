@@ -1,10 +1,10 @@
 import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
-import { Like, Repository } from 'typeorm';
+import { DataSource, Like, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { PageQuery, Paginate } from '@/types/index.type';
-import { StatusUserAct, User } from '@/resources/user/user.entity';
-import { InjectRepository } from '@nestjs/typeorm';
+import { StatusUserAct, User, UserExtra } from '@/resources/user/user.entity';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { DEFAULT_PAGE_SIZE, EMPTY_PAGE } from '@/constants/index.constant';
 import { UserDAO, UserDTO, UserStatus } from '@/resources/user/user.type';
 import { Team } from '@/resources/team/team.entity';
@@ -20,9 +20,12 @@ export class UserService {
 
   constructor(
     @InjectRepository(User) private readonly userRepo: Repository<User>,
+    @InjectRepository(UserExtra)
+    private readonly extraRepo: Repository<UserExtra>,
     @InjectRepository(StatusUserAct)
     private readonly userStatRepo: Repository<StatusUserAct>,
     @InjectRepository(Team) private readonly teamRepo: Repository<Team>,
+    @InjectDataSource() private readonly dataSource: DataSource,
   ) {}
 
   async listUsers(options?: {
@@ -116,7 +119,21 @@ export class UserService {
       const salt = await bcrypt.genSalt(round);
       newUser.pwd = await bcrypt.hash(newUser.pwd, salt);
       // save new user
-      await this.userRepo.save(newUser);
+      const queryRunner = this.dataSource.createQueryRunner();
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
+      try {
+        const usr = await queryRunner.manager.save(newUser);
+        await queryRunner.manager.save(
+          this.extraRepo.create({ userId: usr.id, extraInfo: {} }),
+        );
+        await queryRunner.commitTransaction();
+      } catch (error) {
+        await queryRunner.rollbackTransaction();
+        throw error;
+      } finally {
+        await queryRunner.release();
+      }
       return;
     }
     throw new Error(this.Exceptions.USER_EXISTS);

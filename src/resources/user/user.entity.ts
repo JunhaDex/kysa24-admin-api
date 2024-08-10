@@ -48,6 +48,18 @@ export class User {
   team: Team;
 }
 
+@Entity({ name: 'user_info' })
+export class UserExtra {
+  @PrimaryGeneratedColumn()
+  id: number;
+  @Column()
+  userId: number;
+  @Column({ type: 'simple-json', name: 'extra_info' })
+  extraInfo: any;
+  @Column()
+  createdAt: Date;
+}
+
 @Entity({ name: 'status_user_act' })
 export class StatusUserAct {
   @PrimaryGeneratedColumn()

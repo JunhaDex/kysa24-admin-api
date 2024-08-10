@@ -41,7 +41,7 @@ const main = async () => {
   const sheets = bootstrap();
   const result = await sheets.spreadsheets.values.get({
     spreadsheetId: sheetId,
-    range: 'users!A1:K15',
+    range: 'users!A1:J99',
   });
   if (result.status === 200) {
     // cleanup data and make as an object
