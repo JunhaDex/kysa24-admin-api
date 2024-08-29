@@ -6,7 +6,6 @@ const sheetId = process.env.GDRIVE_SHEET_ID;
 const adminId = process.env.APP_ADMIN_ID;
 const adminPwd = process.env.APP_ADMIN_PWD;
 
-const BASE_URL = 'http://127.0.0.1:3000/api/v1';
 const USERS_COLUMNS = [
   'name',
   'sex',
@@ -41,7 +40,7 @@ const main = async () => {
   const sheets = bootstrap();
   const result = await sheets.spreadsheets.values.get({
     spreadsheetId: sheetId,
-    range: 'users!A1:J99',
+    range: 'users!A1:J660',
   });
   if (result.status === 200) {
     // cleanup data and make as an object
@@ -54,7 +53,7 @@ const main = async () => {
       .map((sub) => {
         const user = {};
         for (let i = 0; i < sub.length; i++) {
-          if (['sex', 'age'].includes(USERS_COLUMNS[i])) {
+          if (['age'].includes(USERS_COLUMNS[i])) {
             user[USERS_COLUMNS[i]] = Number(sub[i]);
           } else {
             user[USERS_COLUMNS[i]] = sub[i];
@@ -66,6 +65,10 @@ const main = async () => {
     // calling API to create user
     let cbk = false; //circuit breaker
     for (const user of users) {
+      if (user.team_id === '-') {
+        console.log(`${user.name} cancelled. skipping...`);
+        continue;
+      }
       try {
         const res = await axios.post(
           `${BASE_URL}/user/new`,
